@@ -23,41 +23,38 @@ body {
     overflow: hidden;
     text-align: center;
     position: relative;
-    cursor: pointer;
 }
 
-.starBG {
+.starBG, .starFG {
     position: fixed;
     top: 0;
     left: 0;
     width: 200%;
     height: 200%;
-    background: url('starBG.png') repeat;
-    background-size: 700px;
-    animation: bgScroll 120s linear infinite;
-    opacity: 0.4;
-    z-index: -2;
-}
-
-.starFG {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 200%;
-    background: url('starFG.png') repeat;
-    background-size: 500px;
-    animation: fgScroll 60s linear infinite;
-    opacity: 0.8;
+    background-repeat: repeat;
     z-index: -1;
 }
 
-@keyframes bgScroll {
+.starBG {
+    background-image: url('starBG.png');
+    background-size: 700px;
+    opacity: 0.35;
+    animation: slowBG 300s linear infinite;
+}
+
+.starFG {
+    background-image: url('starFG.png');
+    background-size: 500px;
+    opacity: 0.7;
+    animation: slowFG 180s linear infinite;
+}
+
+@keyframes slowBG {
     from { background-position: 0 0; }
     to { background-position: 0 -20000px; }
 }
 
-@keyframes fgScroll {
+@keyframes slowFG {
     from { background-position: 0 0; }
     to { background-position: 0 -20000px; }
 }
@@ -85,8 +82,9 @@ h1 {
 
 .final {
     color: red;
-    font-size: 90px;
+    font-size: 80px;
     text-shadow: 0 0 25px red, 0 0 60px red;
+    font-family: 'AmericanCaptain';
 }
 </style>
 </head>
@@ -99,14 +97,11 @@ h1 {
 <h1 id="title">THE PARADOX IS COMING</h1>
 <div id="countdown">LOADING...</div>
 
-<audio id="bgMusic" src="defeatAmbience.ogg" loop autoplay></audio>
-
 <script>
 const targetDate = new Date("July 31, 2026 00:00:00").getTime();
 
 const countdownEl = document.getElementById("countdown");
 const titleEl = document.getElementById("title");
-const music = document.getElementById("bgMusic");
 
 function updateCountdown() {
     const now = Date.now();
@@ -114,18 +109,10 @@ function updateCountdown() {
 
     if (distance <= 0) {
         document.body.innerHTML = "";
-        document.body.style.background = "#000";
 
         const finalText = document.createElement("div");
         finalText.textContent = "THE PARADOX HAS BEGUN.";
-        finalText.style.color = "red";
-        finalText.style.fontSize = "80px";
-        finalText.style.fontFamily = "AmericanCaptain";
-        finalText.style.textShadow = "0 0 25px red, 0 0 60px red";
-        finalText.style.display = "flex";
-        finalText.style.height = "100vh";
-        finalText.style.alignItems = "center";
-        finalText.style.justifyContent = "center";
+        finalText.className = "final";
 
         document.body.appendChild(finalText);
         return;
@@ -142,13 +129,6 @@ function updateCountdown() {
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
-
-/* 🎵 FORCE AUTOPLAY ATTEMPT */
-music.volume = 1;
-music.play().catch(() => {
-    // fallback silencioso si el navegador bloquea autoplay
-    console.log("Autoplay bloqueado por el navegador");
-});
 </script>
 
 </body>
