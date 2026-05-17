@@ -9,9 +9,15 @@
 <link rel="icon" href="icono.png" type="image/png">
 
 <style>
+
 @font-face {
     font-family: 'AmericanCaptain';
     src: url('american-captain.ttf');
+}
+
+@font-face {
+    font-family: 'VCR';
+    src: url('VCR_OSD_MONO.ttf');
 }
 
 body {
@@ -83,6 +89,11 @@ body {
     line-height: 1.4;
 }
 
+.vcr {
+    font-family: 'VCR';
+    letter-spacing: 1px;
+}
+
 .parts {
     margin-bottom: 60px;
 }
@@ -92,18 +103,18 @@ body {
 }
 
 .part h2 {
-    font-family: 'AmericanCaptain';
+    font-family: 'VCR';
     font-size: 42px;
     margin: 0;
 }
 
 .part p {
-    opacity: 0.75;
+    font-family: 'VCR';
+    opacity: 0.8;
     margin: 10px 0 0 0;
     font-size: 22px;
 }
 
-/* DOWNLOAD */
 .downloadWrap {
     position: relative;
     display: inline-block;
@@ -190,7 +201,8 @@ body {
         Including 36 weeks, 126 songs, and 4 story sections!
     </p>
 
-    <div class="parts">
+    <div class="parts vcr">
+
         <div class="part">
             <h2>Vs. Impostor Paradox [PART ONE]</h2>
             <p>Someday This Year</p>
@@ -200,6 +212,7 @@ body {
             <h2>Vs. Impostor Paradox [PART TWO]</h2>
             <p>2027</p>
         </div>
+
     </div>
 
     <a href="https://drive.google.com/file/d/1mbjDU6dhLVA-JyimDpUVG6vg__f3gvNS/view?usp=sharing" target="_blank">
@@ -209,7 +222,6 @@ body {
     </a>
 
     <p class="downloadText">DOWNLOAD THE DEMO!</p>
-
 
     <div id="comingText">THE PARADOX IS COMING</div>
     <div id="countdown">LOADING...</div>
