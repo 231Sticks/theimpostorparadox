@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Paradox Is Coming</title>
+
+<style>
+    @font-face {
+        font-family: 'AmericanCaptain';
+        src: url('american-captain.ttf');
+    }
+
+    body {
+        margin: 0;
+        background: #000;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+        text-align: center;
+        position: relative;
+    }
+
+    .starBG {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 200%;
+        height: 200%;
+        background: url('starBG.png') repeat;
+        background-size: 700px;
+        animation: moveBG 120s linear infinite;
+        opacity: 0.4;
+        z-index: -2;
+    }
+
+    .starFG {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 200%;
+        height: 200%;
+        background: url('starFG.png') repeat;
+        background-size: 500px;
+        animation: moveFG 60s linear infinite;
+        opacity: 0.8;
+        z-index: -1;
+    }
+
+    @keyframes moveBG {
+        from {
+            transform: translateY(0);
+        }
+        to {
+            transform: translateY(-1000px);
+        }
+    }
+
+    @keyframes moveFG {
+        from {
+            transform: translateY(0);
+        }
+        to {
+            transform: translateY(-1500px);
+        }
+    }
+
+    h1 {
+        font-family: 'AmericanCaptain';
+        font-size: 90px;
+        letter-spacing: 3px;
+        margin-bottom: 30px;
+        text-shadow: 0 0 20px rgba(255,255,255,0.35);
+    }
+
+    #countdown {
+        font-family: 'AmericanCaptain';
+        font-size: 70px;
+        background: rgba(255,255,255,0.05);
+        padding: 20px 40px;
+        border-radius: 20px;
+        border: 2px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(5px);
+        box-shadow: 0 0 30px rgba(255,255,255,0.1);
+    }
+</style>
+</head>
+<body>
+
+<div class="starBG"></div>
+<div class="starFG"></div>
+
+<h1>THE PARADOX IS COMING</h1>
+
+<div id="countdown">LOADING...</div>
+
+<script>
+    const targetDate = new Date("July 31, 2026 00:00:00").getTime();
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance <= 0) {
+            document.getElementById("countdown").innerHTML = "IT'S HERE";
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((distance / (1000 * 60)) % 60);
+        const seconds = Math.floor((distance / 1000) % 60);
+
+        document.getElementById("countdown").innerHTML =
+            `${days}D ${hours}H ${minutes}M ${seconds}S`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+</script>
+
+</body>
+</html>
