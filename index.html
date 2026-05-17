@@ -6,130 +6,149 @@
 <title>The Paradox Is Coming</title>
 
 <style>
-    @font-face {
-        font-family: 'AmericanCaptain';
-        src: url('american-captain.ttf');
-    }
+@font-face {
+    font-family: 'AmericanCaptain';
+    src: url('american-captain.ttf');
+}
 
-    body {
-        margin: 0;
-        background: #000;
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        height: 100vh;
-        overflow: hidden;
-        text-align: center;
-        position: relative;
-        cursor: pointer;
-    }
+body {
+    margin: 0;
+    background: #000;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
 
-    .starBG {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 200%;
-        height: 200%;
-        background: url('starBG.png') repeat;
-        background-size: 700px;
-        animation: moveBG 120s linear infinite;
-        opacity: 0.4;
-        z-index: -2;
-    }
+.starBG {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background: url('starBG.png') repeat;
+    background-size: 700px;
+    animation: bgScroll 120s linear infinite;
+    opacity: 0.4;
+    z-index: -2;
+}
 
-    .starFG {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 200%;
-        height: 200%;
-        background: url('starFG.png') repeat;
-        background-size: 500px;
-        animation: moveFG 60s linear infinite;
-        opacity: 0.8;
-        z-index: -1;
-    }
+.starFG {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background: url('starFG.png') repeat;
+    background-size: 500px;
+    animation: fgScroll 60s linear infinite;
+    opacity: 0.8;
+    z-index: -1;
+}
 
-    @keyframes moveBG {
-        from { transform: translateY(0); }
-        to { transform: translateY(-1000px); }
-    }
+@keyframes bgScroll {
+    from { background-position: 0 0; }
+    to { background-position: 0 -20000px; }
+}
 
-    @keyframes moveFG {
-        from { transform: translateY(0); }
-        to { transform: translateY(-1500px); }
-    }
+@keyframes fgScroll {
+    from { background-position: 0 0; }
+    to { background-position: 0 -20000px; }
+}
 
-    h1 {
-        font-family: 'AmericanCaptain';
-        font-size: 90px;
-        letter-spacing: 3px;
-        margin-bottom: 30px;
-        text-shadow: 0 0 20px rgba(255,255,255,0.35);
-        user-select: none;
-    }
+h1 {
+    font-family: 'AmericanCaptain';
+    font-size: 90px;
+    letter-spacing: 3px;
+    margin-bottom: 30px;
+    text-shadow: 0 0 20px rgba(255,255,255,0.35);
+    user-select: none;
+}
 
-    #countdown {
-        font-family: 'AmericanCaptain';
-        font-size: 70px;
-        background: rgba(255,255,255,0.05);
-        padding: 20px 40px;
-        border-radius: 20px;
-        border: 2px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(5px);
-        box-shadow: 0 0 30px rgba(255,255,255,0.1);
-        user-select: none;
-    }
+#countdown {
+    font-family: 'AmericanCaptain';
+    font-size: 70px;
+    background: rgba(255,255,255,0.05);
+    padding: 20px 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 30px rgba(255,255,255,0.1);
+    user-select: none;
+}
+
+.final {
+    color: red;
+    font-size: 90px;
+    text-shadow: 0 0 25px red, 0 0 60px red;
+}
 </style>
 </head>
+
 <body>
 
 <div class="starBG"></div>
 <div class="starFG"></div>
 
-<h1>THE PARADOX IS COMING</h1>
-
+<h1 id="title">THE PARADOX IS COMING</h1>
 <div id="countdown">LOADING...</div>
 
-<audio id="bgMusic" src="defeatAmbience.ogg" loop></audio>
+<audio id="bgMusic" src="defeatAmbience.ogg" loop autoplay></audio>
 
 <script>
-    const targetDate = new Date("July 31, 2026 00:00:00").getTime();
+const targetDate = new Date("July 31, 2026 00:00:00").getTime();
 
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const distance = targetDate - now;
+const countdownEl = document.getElementById("countdown");
+const titleEl = document.getElementById("title");
+const music = document.getElementById("bgMusic");
 
-        if (distance <= 0) {
-            document.getElementById("countdown").innerHTML = "IT'S HERE";
-            return;
-        }
+function updateCountdown() {
+    const now = Date.now();
+    const distance = targetDate - now;
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((distance / (1000 * 60)) % 60);
-        const seconds = Math.floor((distance / 1000) % 60);
+    if (distance <= 0) {
+        document.body.innerHTML = "";
+        document.body.style.background = "#000";
 
-        document.getElementById("countdown").innerHTML =
-            `${days}D ${hours}H ${minutes}M ${seconds}S`;
+        const finalText = document.createElement("div");
+        finalText.textContent = "THE PARADOX HAS BEGUN.";
+        finalText.style.color = "red";
+        finalText.style.fontSize = "80px";
+        finalText.style.fontFamily = "AmericanCaptain";
+        finalText.style.textShadow = "0 0 25px red, 0 0 60px red";
+        finalText.style.display = "flex";
+        finalText.style.height = "100vh";
+        finalText.style.alignItems = "center";
+        finalText.style.justifyContent = "center";
+
+        document.body.appendChild(finalText);
+        return;
     }
 
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((distance / (1000 * 60)) % 60);
+    const seconds = Math.floor((distance / 1000) % 60);
 
-    const music = document.getElementById("bgMusic");
+    countdownEl.textContent =
+        `${days}D ${hours}H ${minutes}M ${seconds}S`;
+}
 
-    function startMusic() {
-        music.play().then(() => {
-            document.removeEventListener("click", startMusic);
-        }).catch(error => {
-            console.log("Esperando interacción del usuario para reproducir audio...");
-        });
-    }
+updateCountdown();
+setInterval(updateCountdown, 1000);
 
-    document.addEventListener("click", startMusic);
+/* 🎵 FORCE AUTOPLAY ATTEMPT */
+music.volume = 1;
+music.play().catch(() => {
+    // fallback silencioso si el navegador bloquea autoplay
+    console.log("Autoplay bloqueado por el navegador");
+});
 </script>
 
 </body>
