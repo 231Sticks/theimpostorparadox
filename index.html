@@ -23,6 +23,7 @@
         overflow: hidden;
         text-align: center;
         position: relative;
+        cursor: pointer;
     }
 
     .starBG {
@@ -52,21 +53,13 @@
     }
 
     @keyframes moveBG {
-        from {
-            transform: translateY(0);
-        }
-        to {
-            transform: translateY(-1000px);
-        }
+        from { transform: translateY(0); }
+        to { transform: translateY(-1000px); }
     }
 
     @keyframes moveFG {
-        from {
-            transform: translateY(0);
-        }
-        to {
-            transform: translateY(-1500px);
-        }
+        from { transform: translateY(0); }
+        to { transform: translateY(-1500px); }
     }
 
     h1 {
@@ -75,6 +68,7 @@
         letter-spacing: 3px;
         margin-bottom: 30px;
         text-shadow: 0 0 20px rgba(255,255,255,0.35);
+        user-select: none;
     }
 
     #countdown {
@@ -86,6 +80,7 @@
         border: 2px solid rgba(255,255,255,0.1);
         backdrop-filter: blur(5px);
         box-shadow: 0 0 30px rgba(255,255,255,0.1);
+        user-select: none;
     }
 </style>
 </head>
@@ -97,6 +92,8 @@
 <h1>THE PARADOX IS COMING</h1>
 
 <div id="countdown">LOADING...</div>
+
+<audio id="bgMusic" src="defeatAmbience.ogg" loop></audio>
 
 <script>
     const targetDate = new Date("July 31, 2026 00:00:00").getTime();
@@ -121,6 +118,18 @@
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    const music = document.getElementById("bgMusic");
+
+    function startMusic() {
+        music.play().then(() => {
+            document.removeEventListener("click", startMusic);
+        }).catch(error => {
+            console.log("Esperando interacción del usuario para reproducir audio...");
+        });
+    }
+
+    document.addEventListener("click", startMusic);
 </script>
 
 </body>
