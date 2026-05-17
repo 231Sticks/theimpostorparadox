@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>VS Impostor Paradox</title>
+<title>Impostor Paradox</title>
 
 <link rel="icon" href="icono.png" type="image/png">
 
@@ -65,38 +65,45 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 40px;
+    margin-top: 60px;
 }
 
 .logo {
-    width: 380px;
-    margin-bottom: 20px;
-    filter: drop-shadow(0 0 25px rgba(255,255,255,0.25));
+    width: 450px;
+    margin-bottom: 25px;
+    filter: drop-shadow(0 0 30px rgba(255,255,255,0.3));
 }
 
 .desc {
-    font-family: Arial;
-    max-width: 650px;
-    opacity: 0.85;
-    margin-bottom: 30px;
+    font-family: 'AmericanCaptain';
+    font-size: 30px;
+    max-width: 750px;
+    opacity: 0.9;
+    margin-bottom: 45px;
     line-height: 1.4;
 }
 
 .parts {
-    margin-bottom: 30px;
+    margin-bottom: 60px;
+}
+
+.part {
+    margin-bottom: 40px;
 }
 
 .part h2 {
     font-family: 'AmericanCaptain';
-    font-size: 28px;
+    font-size: 42px;
     margin: 0;
 }
 
 .part p {
-    opacity: 0.7;
-    margin: 5px 0 15px 0;
+    opacity: 0.75;
+    margin: 10px 0 0 0;
+    font-size: 22px;
 }
 
+/* DOWNLOAD */
 .downloadWrap {
     position: relative;
     display: inline-block;
@@ -107,50 +114,61 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 120%;
-    height: 120%;
+    width: 130%;
+    height: 130%;
     transform: translate(-50%, -50%);
     background: white;
-    filter: blur(35px);
+    filter: blur(40px);
     opacity: 0.25;
     z-index: -1;
     border-radius: 20px;
 }
 
 .downloadImg {
-    width: 320px;
+    width: 380px;
     cursor: pointer;
     transition: 0.3s;
 }
 
 .downloadImg:hover {
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 20px white);
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 25px white);
 }
 
 .downloadText {
-    margin-top: 10px;
+    margin-top: 12px;
     font-family: 'AmericanCaptain';
     letter-spacing: 2px;
+    font-size: 24px;
+}
+
+#comingText {
+    margin-top: 70px;
+    font-family: 'AmericanCaptain';
+    font-size: 55px;
+    letter-spacing: 3px;
+    opacity: 0.9;
+    text-shadow: 0 0 20px white;
 }
 
 #countdown {
-    margin-top: 40px;
+    margin-top: 20px;
     font-family: 'AmericanCaptain';
-    font-size: 60px;
-    padding: 20px 40px;
+    font-size: 80px;
+    padding: 25px 50px;
     border-radius: 20px;
     border: 2px solid rgba(255,255,255,0.1);
     background: rgba(255,255,255,0.05);
-    box-shadow: 0 0 30px rgba(255,255,255,0.1);
+    box-shadow: 0 0 35px rgba(255,255,255,0.12);
 }
 
 .final {
     color: red;
-    font-size: 80px;
+    font-size: 90px;
     font-family: 'AmericanCaptain';
-    text-shadow: 0 0 25px red, 0 0 60px red;
+    text-shadow: 0 0 30px red, 0 0 80px red;
     height: 100vh;
+    width: 100vw;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -168,8 +186,8 @@ body {
     <img src="logo.png" class="logo">
 
     <p class="desc">
-        This mod, based on the original VS Impostor, will offer a complete expansion and revamp of the mod's storyline.<br><br>
-        Including <b>36 weeks</b>, <b>126 songs</b>, and <b>4 story sections</b>!
+        This mod, based on the original VS Impostor, will offer a complete expansion and revamp of the mod's storyline.<br>
+        Including 36 weeks, 126 songs, and 4 story sections!
     </p>
 
     <div class="parts">
@@ -192,6 +210,8 @@ body {
 
     <p class="downloadText">DOWNLOAD THE DEMO!</p>
 
+
+    <div id="comingText">THE PARADOX IS COMING</div>
     <div id="countdown">LOADING...</div>
 
 </div>
@@ -208,7 +228,7 @@ function updateCountdown() {
         document.body.innerHTML = "";
 
         const final = document.createElement("div");
-        final.textContent = "THE PARADOX HAS BEGUN.";
+        final.textContent = "THE PARADOX HAS BEGUN";
         final.className = "final";
 
         document.body.appendChild(final);
@@ -220,8 +240,7 @@ function updateCountdown() {
     const minutes = Math.floor((distance / (1000 * 60)) % 60);
     const seconds = Math.floor((distance / 1000) % 60);
 
-    countdownEl.textContent =
-        `${days}D ${hours}H ${minutes}M ${seconds}S`;
+    countdownEl.textContent = `${days}D ${hours}H ${minutes}M ${seconds}S`;
 }
 
 updateCountdown();
