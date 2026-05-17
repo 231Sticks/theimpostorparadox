@@ -2,9 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" href="defeat23.png" type="image/png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Paradox Is Coming</title>
+
+<title>VS Impostor Paradox</title>
+
+<link rel="icon" href="icono.png" type="image/png">
 
 <style>
 @font-face {
@@ -20,10 +22,9 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
     text-align: center;
-    position: relative;
 }
 
 .starBG, .starFG {
@@ -40,52 +41,119 @@ body {
     background-image: url('starBG.png');
     background-size: 700px;
     opacity: 0.35;
-    animation: slowBG 300s linear infinite;
+    animation: bgMove 300s linear infinite;
 }
 
 .starFG {
     background-image: url('starFG.png');
     background-size: 500px;
     opacity: 0.7;
-    animation: slowFG 180s linear infinite;
+    animation: fgMove 180s linear infinite;
 }
 
-@keyframes slowBG {
+@keyframes bgMove {
     from { background-position: 0 0; }
     to { background-position: 0 -20000px; }
 }
 
-@keyframes slowFG {
+@keyframes fgMove {
     from { background-position: 0 0; }
     to { background-position: 0 -20000px; }
 }
 
-h1 {
-    font-family: 'AmericanCaptain';
-    font-size: 90px;
-    letter-spacing: 3px;
+.top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.logo {
+    width: 380px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 25px rgba(255,255,255,0.25));
+}
+
+.desc {
+    font-family: Arial;
+    max-width: 650px;
+    opacity: 0.85;
     margin-bottom: 30px;
-    text-shadow: 0 0 20px rgba(255,255,255,0.35);
-    user-select: none;
+    line-height: 1.4;
+}
+
+.parts {
+    margin-bottom: 30px;
+}
+
+.part h2 {
+    font-family: 'AmericanCaptain';
+    font-size: 28px;
+    margin: 0;
+}
+
+.part p {
+    opacity: 0.7;
+    margin: 5px 0 15px 0;
+}
+
+.downloadWrap {
+    position: relative;
+    display: inline-block;
+}
+
+.downloadWrap::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    transform: translate(-50%, -50%);
+    background: white;
+    filter: blur(35px);
+    opacity: 0.25;
+    z-index: -1;
+    border-radius: 20px;
+}
+
+.downloadImg {
+    width: 320px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.downloadImg:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 20px white);
+}
+
+.downloadText {
+    margin-top: 10px;
+    font-family: 'AmericanCaptain';
+    letter-spacing: 2px;
 }
 
 #countdown {
+    margin-top: 40px;
     font-family: 'AmericanCaptain';
-    font-size: 70px;
-    background: rgba(255,255,255,0.05);
+    font-size: 60px;
     padding: 20px 40px;
     border-radius: 20px;
     border: 2px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(5px);
+    background: rgba(255,255,255,0.05);
     box-shadow: 0 0 30px rgba(255,255,255,0.1);
-    user-select: none;
 }
 
 .final {
     color: red;
     font-size: 80px;
-    text-shadow: 0 0 25px red, 0 0 60px red;
     font-family: 'AmericanCaptain';
+    text-shadow: 0 0 25px red, 0 0 60px red;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>
 </head>
@@ -95,14 +163,42 @@ h1 {
 <div class="starBG"></div>
 <div class="starFG"></div>
 
-<h1 id="title">THE PARADOX IS COMING</h1>
-<div id="countdown">LOADING...</div>
+<div class="top">
+
+    <img src="logo.png" class="logo">
+
+    <p class="desc">
+        This mod, based on the original VS Impostor, will offer a complete expansion and revamp of the mod's storyline.<br><br>
+        Including <b>36 weeks</b>, <b>126 songs</b>, and <b>4 story sections</b>!
+    </p>
+
+    <div class="parts">
+        <div class="part">
+            <h2>Vs. Impostor Paradox [PART ONE]</h2>
+            <p>Someday This Year</p>
+        </div>
+
+        <div class="part">
+            <h2>Vs. Impostor Paradox [PART TWO]</h2>
+            <p>2027</p>
+        </div>
+    </div>
+
+    <a href="https://drive.google.com/file/d/1mbjDU6dhLVA-JyimDpUVG6vg__f3gvNS/view?usp=sharing" target="_blank">
+        <div class="downloadWrap">
+            <img src="DEMOART.png" class="downloadImg">
+        </div>
+    </a>
+
+    <p class="downloadText">DOWNLOAD THE DEMO!</p>
+
+    <div id="countdown">LOADING...</div>
+
+</div>
 
 <script>
 const targetDate = new Date("July 31, 2026 00:00:00").getTime();
-
 const countdownEl = document.getElementById("countdown");
-const titleEl = document.getElementById("title");
 
 function updateCountdown() {
     const now = Date.now();
@@ -111,11 +207,11 @@ function updateCountdown() {
     if (distance <= 0) {
         document.body.innerHTML = "";
 
-        const finalText = document.createElement("div");
-        finalText.textContent = "THE PARADOX HAS BEGUN.";
-        finalText.className = "final";
+        const final = document.createElement("div");
+        final.textContent = "THE PARADOX HAS BEGUN.";
+        final.className = "final";
 
-        document.body.appendChild(finalText);
+        document.body.appendChild(final);
         return;
     }
 
