@@ -20,17 +20,72 @@
     src: url('VCR_OSD_MONO.ttf');
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     background: #000;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    min-height: 100vh;
+    color: #f2f2f2;
+    font-family: sans-serif;
     overflow-x: hidden;
     text-align: center;
+}
+
+#intro {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: introFade 6s forwards;
+}
+
+#intro h1 {
+    font-family: 'AmericanCaptain';
+    font-size: 70px;
+    letter-spacing: 4px;
+    margin: 0;
+    opacity: 0;
+    animation: introText 1.5s forwards;
+}
+
+#introLogo {
+    width: 450px;
+    margin-top: 25px;
+    opacity: 0;
+    transform: scale(0.8);
+    animation: introLogoAnim 2s forwards;
+    animation-delay: 1s;
+    filter: drop-shadow(0 0 40px rgba(255,255,255,0.3));
+}
+
+@keyframes introText {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes introLogoAnim {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes introFade {
+    0%, 80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
 }
 
 .starBG, .starFG {
@@ -40,7 +95,7 @@ body {
     width: 200%;
     height: 200%;
     background-repeat: repeat;
-    z-index: -1;
+    z-index: -2;
 }
 
 .starBG {
@@ -67,52 +122,203 @@ body {
     to { background-position: 0 -20000px; }
 }
 
-.top {
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.02),
+        rgba(255,255,255,0.02) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    pointer-events: none;
+    z-index: 999;
+}
+
+.mainContent {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 60px;
+    min-height: 100vh;
+    padding: 60px 20px 120px;
+    animation: fadeIn 2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .logo {
     width: 450px;
-    margin-bottom: 25px;
-    filter: drop-shadow(0 0 30px rgba(255,255,255,0.3));
+    margin-bottom: 45px;
+    filter: drop-shadow(0 0 35px rgba(255,255,255,0.25));
+    animation: floatLogo 4s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
 }
 
 .desc {
     font-family: 'AmericanCaptain';
-    font-size: 30px;
-    max-width: 750px;
-    opacity: 0.9;
-    margin-bottom: 45px;
-    line-height: 1.4;
-}
+    font-size: 32px;
+    max-width: 850px;
+    line-height: 1.45;
+    opacity: 0.92;
+    margin-bottom: 90px;
 
-.vcr {
-    font-family: 'VCR';
-    letter-spacing: 1px;
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.08);
 }
 
 .parts {
-    margin-bottom: 60px;
+    width: 100%;
+    max-width: 950px;
+    margin-bottom: 90px;
 }
 
-.part {
-    margin-bottom: 40px;
+.part:first-child {
+    position: relative;
+    padding: 40px;
+    margin-bottom: 45px;
+    border-radius: 24px;
+
+    background: rgba(125, 0, 95, 0.12);
+
+    border: 1px solid rgba(125, 0, 95, 0.45);
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 0 30px rgba(125, 0, 95, 0.45),
+        inset 0 0 25px rgba(125, 0, 95, 0.18);
+
+    overflow: hidden;
 }
 
-.part h2 {
+.part:first-child::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        #7D005F,
+        transparent
+    );
+
+    opacity: 0.9;
+}
+
+.part:first-child h2 {
     font-family: 'VCR';
-    font-size: 42px;
+    font-size: 46px;
     margin: 0;
+
+    color: red;
+
+    text-shadow:
+        0 0 10px #7D005F,
+        0 0 20px #7D005F,
+        0 0 40px #7D005F;
 }
 
-.part p {
+.part:first-child p {
     font-family: 'VCR';
-    opacity: 0.8;
-    margin: 10px 0 0 0;
-    font-size: 22px;
+    font-size: 24px;
+    margin-top: 18px;
+
+    color: red;
+
+    text-shadow:
+        0 0 10px #7D005F,
+        0 0 20px #7D005F;
+}
+
+.part:last-child {
+    position: relative;
+    padding: 40px;
+    margin-bottom: 45px;
+    border-radius: 24px;
+
+    background: rgba(0, 255, 255, 0.08);
+
+    border: 1px solid rgba(7, 148, 228, 0.5);
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 0 30px rgba(7, 148, 228, 0.45),
+        inset 0 0 25px rgba(7, 148, 228, 0.18);
+
+    overflow: hidden;
+}
+
+.part:last-child::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+
+    background: linear-gradient(
+        to right,
+        transparent,
+        #0794E4,
+        transparent
+    );
+
+    opacity: 0.9;
+}
+
+.part:last-child h2 {
+    font-family: 'VCR';
+    font-size: 46px;
+    margin: 0;
+
+    color: #00FFFF;
+
+    text-shadow:
+        0 0 10px #0794E4,
+        0 0 20px #0794E4,
+        0 0 40px #0794E4;
+}
+
+.part:last-child p {
+    font-family: 'VCR';
+    font-size: 24px;
+    margin-top: 18px;
+
+    color: #00FFFF;
+
+    text-shadow:
+        0 0 10px #0794E4,
+        0 0 20px #0794E4;
 }
 
 .downloadWrap {
@@ -125,83 +331,228 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 130%;
-    height: 130%;
+    width: 135%;
+    height: 135%;
     transform: translate(-50%, -50%);
     background: white;
-    filter: blur(40px);
-    opacity: 0.25;
+    filter: blur(50px);
+    opacity: 0.18;
     z-index: -1;
-    border-radius: 20px;
+    border-radius: 25px;
 }
 
 .downloadImg {
-    width: 380px;
+    width: 420px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: 0.35s;
 }
 
 .downloadImg:hover {
-    transform: scale(1.06);
+    transform: scale(1.08) rotate(-1deg);
     filter: drop-shadow(0 0 25px white);
 }
 
 .downloadText {
-    margin-top: 12px;
+    margin-top: 18px;
     font-family: 'AmericanCaptain';
     letter-spacing: 2px;
-    font-size: 24px;
+    font-size: 28px;
+    margin-bottom: 25px;
+}
+
+.trailerLink {
+    margin-bottom: 90px;
+
+    font-family: 'AmericanCaptain';
+    font-size: 30px;
+    letter-spacing: 2px;
+
+    color: #ff3b3b;
+
+    text-decoration: none;
+
+    text-shadow:
+        0 0 10px rgba(255, 59, 59, 0.8),
+        0 0 25px rgba(255, 59, 59, 0.5);
+
+    transition: 0.3s;
+}
+
+.trailerLink:hover {
+    color: white;
+
+    transform: scale(1.05);
+
+    text-shadow:
+        0 0 12px white,
+        0 0 30px red;
 }
 
 #comingText {
-    margin-top: 70px;
+    margin-top: 30px;
+    margin-bottom: 25px;
+
     font-family: 'AmericanCaptain';
-    font-size: 55px;
+    font-size: 60px;
     letter-spacing: 3px;
-    opacity: 0.9;
-    text-shadow: 0 0 20px white;
+
+    text-shadow:
+        0 0 15px white,
+        0 0 40px rgba(255,255,255,0.2);
 }
 
 #countdown {
-    margin-top: 20px;
     font-family: 'AmericanCaptain';
-    font-size: 80px;
-    padding: 25px 50px;
-    border-radius: 20px;
-    border: 2px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.05);
-    box-shadow: 0 0 35px rgba(255,255,255,0.12);
+
+    font-size: 85px;
+
+    padding: 30px 60px;
+
+    border-radius: 24px;
+
+    border: 2px solid rgba(255,255,255,0.14);
+
+    background: rgba(255,255,255,0.04);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 0 35px rgba(255,255,255,0.1),
+        inset 0 0 20px rgba(255,255,255,0.04);
+
+    text-shadow:
+        0 0 10px white,
+        0 0 22px rgba(255,255,255,0.2);
+
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.03);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 .final {
     color: red;
-    font-size: 90px;
+    font-size: 95px;
     font-family: 'AmericanCaptain';
-    text-shadow: 0 0 30px red, 0 0 80px red;
+
+    text-shadow:
+        0 0 30px red,
+        0 0 80px red;
+
     height: 100vh;
     width: 100vw;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
+    animation: finalFlash 1s infinite alternate;
 }
+
+@keyframes finalFlash {
+    from {
+        opacity: 0.8;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .logo {
+        width: 95%;
+    }
+
+    #introLogo {
+        width: 90%;
+    }
+
+    #intro h1 {
+        font-size: 48px;
+    }
+
+    .desc {
+        font-size: 22px;
+        padding: 0 10px;
+        margin-bottom: 70px;
+    }
+
+    .part {
+        padding: 25px;
+    }
+
+    .part h2 {
+        font-size: 28px;
+    }
+
+    .part p {
+        font-size: 18px;
+    }
+
+    .downloadImg {
+        width: 95%;
+    }
+
+    .downloadText {
+        font-size: 22px;
+    }
+
+    .trailerLink {
+        font-size: 24px;
+        padding: 0 10px;
+    }
+
+    #comingText {
+        font-size: 42px;
+    }
+
+    #countdown {
+        font-size: 42px;
+        padding: 22px;
+    }
+}
+
 </style>
 </head>
 
 <body>
 
+<div id="intro">
+
+    <h1>WELCOME TO</h1>
+
+    <img src="logo.png" id="introLogo">
+
+</div>
+
 <div class="starBG"></div>
 <div class="starFG"></div>
 
-<div class="top">
+<!-- MAIN -->
+
+<div class="mainContent">
 
     <img src="logo.png" class="logo">
 
     <p class="desc">
-        This mod, based on the original VS Impostor, will offer a complete expansion and revamp of the mod's storyline.<br>
+        This mod, based on the original VS Impostor, will offer a complete expansion and revamp of the mod's storyline.<br><br>
         Including 36 weeks, 126 songs, and 4 story sections!
     </p>
 
-    <div class="parts vcr">
+    <div class="parts">
 
         <div class="part">
             <h2>Vs. Impostor Paradox [PART ONE]</h2>
@@ -216,47 +567,68 @@ body {
     </div>
 
     <a href="https://drive.google.com/file/d/1mbjDU6dhLVA-JyimDpUVG6vg__f3gvNS/view?usp=sharing" target="_blank">
+
         <div class="downloadWrap">
             <img src="DEMOART.png" class="downloadImg">
         </div>
+
     </a>
 
     <p class="downloadText">DOWNLOAD THE DEMO!</p>
 
+    <a href="https://youtu.be/CeiaZoNLYV4" target="_blank" class="trailerLink">
+        WATCH THE TRAILER 2.5 NOW!
+    </a>
+
     <div id="comingText">THE PARADOX IS COMING</div>
+
     <div id="countdown">LOADING...</div>
 
 </div>
 
 <script>
+
 const targetDate = new Date("July 31, 2026 00:00:00").getTime();
+
 const countdownEl = document.getElementById("countdown");
 
 function updateCountdown() {
+
     const now = Date.now();
+
     const distance = targetDate - now;
 
     if (distance <= 0) {
+
         document.body.innerHTML = "";
 
         const final = document.createElement("div");
+
         final.textContent = "THE PARADOX HAS BEGUN";
+
         final.className = "final";
 
         document.body.appendChild(final);
+
         return;
     }
 
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+
     const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+
     const minutes = Math.floor((distance / (1000 * 60)) % 60);
+
     const seconds = Math.floor((distance / 1000) % 60);
 
-    countdownEl.textContent = `${days}D ${hours}H ${minutes}M ${seconds}S`;
+    countdownEl.textContent =
+        `${days}D ${hours}H ${minutes}M ${seconds}S`;
 }
 
 updateCountdown();
+
 setInterval(updateCountdown, 1000);
+
 </script>
 
 </body>
