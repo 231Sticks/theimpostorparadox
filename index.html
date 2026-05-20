@@ -24,14 +24,22 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
-    background: #000;
+    background: black;
     color: #f2f2f2;
-    font-family: sans-serif;
     overflow-x: hidden;
     text-align: center;
+    cursor: url('cursor.png'), auto;
 }
+
+/* ========================= */
+/* INTRO */
+/* ========================= */
 
 #intro {
     position: fixed;
@@ -41,61 +49,78 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
-    animation: introFade 6s forwards;
+    z-index: 99999;
+    overflow: hidden;
 }
 
-#intro h1 {
+#introText {
     font-family: 'AmericanCaptain';
-    font-size: 70px;
-    letter-spacing: 4px;
-    margin: 0;
+    font-size: 75px;
+    letter-spacing: 5px;
+
     opacity: 0;
-    animation: introText 1.5s forwards;
+
+    animation:
+        introTextFade 1.5s forwards;
 }
 
 #introLogo {
-    width: 450px;
+    width: 470px;
+
     margin-top: 25px;
+
     opacity: 0;
-    transform: scale(0.8);
-    animation: introLogoAnim 2s forwards;
-    animation-delay: 1s;
-    filter: drop-shadow(0 0 40px rgba(255,255,255,0.3));
+
+    position: relative;
+
+    filter:
+        drop-shadow(0 0 20px white)
+        drop-shadow(0 0 40px rgba(255,255,255,0.3));
+
+    animation:
+        introLogoAppear 2s forwards,
+        introLogoMove 2s forwards;
+
+    animation-delay:
+        1s,
+        4s;
 }
 
-@keyframes introText {
+@keyframes introTextFade {
     to {
         opacity: 1;
     }
 }
 
-@keyframes introLogoAnim {
+@keyframes introLogoAppear {
     to {
         opacity: 1;
         transform: scale(1);
     }
 }
 
-@keyframes introFade {
-    0%, 80% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-        visibility: hidden;
+@keyframes introLogoMove {
+    to {
+        transform:
+            translateY(-320px)
+            scale(0.96);
     }
 }
 
-.starBG, .starFG {
+/* ========================= */
+/* STAR BACKGROUND */
+/* ========================= */
+
+.starBG,
+.starFG {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: -50%;
+    left: -50%;
     width: 200%;
     height: 200%;
     background-repeat: repeat;
-    z-index: -2;
+    z-index: -5;
+    transition: transform 0.15s linear;
 }
 
 .starBG {
@@ -113,19 +138,53 @@ body {
 }
 
 @keyframes bgMove {
-    from { background-position: 0 0; }
-    to { background-position: 0 -20000px; }
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0 -20000px;
+    }
 }
 
 @keyframes fgMove {
-    from { background-position: 0 0; }
-    to { background-position: 0 -20000px; }
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0 -20000px;
+    }
 }
+
+/* ========================= */
+/* NEBULA */
+/* ========================= */
+
+.nebula {
+    position: fixed;
+    inset: 0;
+
+    background:
+        radial-gradient(circle at center,
+        rgba(125,0,95,0.18),
+        transparent 60%);
+
+    z-index: -4;
+
+    pointer-events: none;
+}
+
+/* ========================= */
+/* VHS EFFECT */
+/* ========================= */
 
 body::before {
     content: "";
+
     position: fixed;
     inset: 0;
+
     background: repeating-linear-gradient(
         to bottom,
         rgba(255,255,255,0.02),
@@ -133,16 +192,28 @@ body::before {
         transparent 1px,
         transparent 3px
     );
+
     pointer-events: none;
+
     z-index: 999;
 }
+
+/* ========================= */
+/* MAIN CONTENT */
+/* ========================= */
 
 .mainContent {
     display: flex;
     flex-direction: column;
     align-items: center;
+
     min-height: 100vh;
-    padding: 60px 20px 120px;
+
+    padding:
+        60px
+        20px
+        140px;
+
     animation: fadeIn 2s ease;
 }
 
@@ -158,14 +229,28 @@ body::before {
     }
 }
 
+/* ========================= */
+/* LOGO */
+/* ========================= */
+
 .logo {
     width: 450px;
-    margin-bottom: 45px;
-    filter: drop-shadow(0 0 35px rgba(255,255,255,0.25));
-    animation: floatLogo 4s ease-in-out infinite;
+
+    margin-bottom: 55px;
+
+    filter:
+        drop-shadow(0 0 25px white)
+        drop-shadow(0 0 45px rgba(255,255,255,0.2));
+
+    animation:
+        floatLogo 4s ease-in-out infinite;
+
+    transition:
+        transform 0.2s linear;
 }
 
 @keyframes floatLogo {
+
     0% {
         transform: translateY(0px);
     }
@@ -179,28 +264,102 @@ body::before {
     }
 }
 
+/* ========================= */
+/* DESCRIPTION */
+/* ========================= */
+
 .desc {
     font-family: 'AmericanCaptain';
+
     font-size: 32px;
+
     max-width: 850px;
+
     line-height: 1.45;
+
     opacity: 0.92;
-    margin-bottom: 90px;
+
+    margin-bottom: 100px;
 
     text-shadow:
         0 0 10px rgba(255,255,255,0.08);
 }
 
+/* ========================= */
+/* FEATURES */
+/* ========================= */
+
+.featuresTitle {
+    font-family: 'AmericanCaptain';
+    font-size: 65px;
+    letter-spacing: 3px;
+
+    margin-bottom: 45px;
+
+    text-shadow:
+        0 0 15px white,
+        0 0 30px rgba(255,255,255,0.2);
+}
+
+.features {
+    width: 100%;
+    max-width: 1100px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
+    gap: 25px;
+
+    margin-bottom: 120px;
+}
+
+.feature {
+    padding: 30px;
+
+    border-radius: 24px;
+
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(10px);
+
+    font-family: 'VCR';
+
+    font-size: 24px;
+
+    box-shadow:
+        0 0 20px rgba(255,255,255,0.05);
+
+    transition: 0.3s;
+}
+
+.feature:hover {
+    transform: translateY(-6px) scale(1.03);
+
+    box-shadow:
+        0 0 30px rgba(255,255,255,0.15);
+}
+
+/* ========================= */
+/* PARTS */
+/* ========================= */
+
 .parts {
     width: 100%;
     max-width: 950px;
-    margin-bottom: 90px;
+    margin-bottom: 120px;
 }
+
+/* PART ONE */
 
 .part:first-child {
     position: relative;
+
     padding: 40px;
+
     margin-bottom: 45px;
+
     border-radius: 24px;
 
     background: rgba(125, 0, 95, 0.12);
@@ -218,26 +377,27 @@ body::before {
 
 .part:first-child::before {
     content: "";
+
     position: absolute;
+
     top: 0;
     left: 0;
+
     width: 100%;
     height: 2px;
 
-    background: linear-gradient(
+    background:
+        linear-gradient(
         to right,
         transparent,
         #7D005F,
         transparent
     );
-
-    opacity: 0.9;
 }
 
 .part:first-child h2 {
     font-family: 'VCR';
     font-size: 46px;
-    margin: 0;
 
     color: red;
 
@@ -249,8 +409,8 @@ body::before {
 
 .part:first-child p {
     font-family: 'VCR';
+
     font-size: 24px;
-    margin-top: 18px;
 
     color: red;
 
@@ -259,47 +419,51 @@ body::before {
         0 0 20px #7D005F;
 }
 
+/* PART TWO */
+
 .part:last-child {
     position: relative;
+
     padding: 40px;
-    margin-bottom: 45px;
+
     border-radius: 24px;
 
-    background: rgba(0, 255, 255, 0.08);
+    background: rgba(0,255,255,0.08);
 
-    border: 1px solid rgba(7, 148, 228, 0.5);
+    border: 1px solid rgba(7,148,228,0.5);
 
     backdrop-filter: blur(10px);
 
     box-shadow:
-        0 0 30px rgba(7, 148, 228, 0.45),
-        inset 0 0 25px rgba(7, 148, 228, 0.18);
+        0 0 30px rgba(7,148,228,0.45),
+        inset 0 0 25px rgba(7,148,228,0.18);
 
     overflow: hidden;
 }
 
 .part:last-child::before {
     content: "";
+
     position: absolute;
+
     top: 0;
     left: 0;
+
     width: 100%;
     height: 2px;
 
-    background: linear-gradient(
+    background:
+        linear-gradient(
         to right,
         transparent,
         #0794E4,
         transparent
     );
-
-    opacity: 0.9;
 }
 
 .part:last-child h2 {
     font-family: 'VCR';
     font-size: 46px;
-    margin: 0;
 
     color: #00FFFF;
 
@@ -311,8 +475,8 @@ body::before {
 
 .part:last-child p {
     font-family: 'VCR';
+
     font-size: 24px;
-    margin-top: 18px;
 
     color: #00FFFF;
 
@@ -321,6 +485,10 @@ body::before {
         0 0 20px #0794E4;
 }
 
+/* ========================= */
+/* DOWNLOAD */
+/* ========================= */
+
 .downloadWrap {
     position: relative;
     display: inline-block;
@@ -328,43 +496,68 @@ body::before {
 
 .downloadWrap::before {
     content: "";
+
     position: absolute;
+
     top: 50%;
     left: 50%;
+
     width: 135%;
     height: 135%;
+
     transform: translate(-50%, -50%);
+
     background: white;
+
     filter: blur(50px);
+
     opacity: 0.18;
+
     z-index: -1;
+
     border-radius: 25px;
 }
 
 .downloadImg {
     width: 420px;
+
     cursor: pointer;
+
     transition: 0.35s;
 }
 
 .downloadImg:hover {
-    transform: scale(1.08) rotate(-1deg);
-    filter: drop-shadow(0 0 25px white);
+    transform:
+        scale(1.08)
+        rotate(-1deg);
+
+    filter:
+        drop-shadow(0 0 25px white);
 }
 
 .downloadText {
-    margin-top: 18px;
+    margin-top: 20px;
+
     font-family: 'AmericanCaptain';
-    letter-spacing: 2px;
+
     font-size: 28px;
+
+    letter-spacing: 2px;
+
     margin-bottom: 25px;
 }
 
+/* ========================= */
+/* TRAILER */
+/* ========================= */
+
 .trailerLink {
-    margin-bottom: 90px;
+    margin-bottom: 100px;
 
     font-family: 'AmericanCaptain';
-    font-size: 30px;
+
+    font-size: 32px;
+
     letter-spacing: 2px;
 
     color: #ff3b3b;
@@ -372,8 +565,8 @@ body::before {
     text-decoration: none;
 
     text-shadow:
-        0 0 10px rgba(255, 59, 59, 0.8),
-        0 0 25px rgba(255, 59, 59, 0.5);
+        0 0 10px rgba(255,59,59,0.8),
+        0 0 25px rgba(255,59,59,0.5);
 
     transition: 0.3s;
 }
@@ -384,16 +577,21 @@ body::before {
     transform: scale(1.05);
 
     text-shadow:
-        0 0 12px white,
-        0 0 30px red;
+        0 0 15px white,
+        0 0 35px red;
 }
 
+/* ========================= */
+/* COUNTDOWN */
+/* ========================= */
+
 #comingText {
-    margin-top: 30px;
     margin-bottom: 25px;
 
     font-family: 'AmericanCaptain';
+
     font-size: 60px;
+
     letter-spacing: 3px;
 
     text-shadow:
@@ -424,10 +622,12 @@ body::before {
         0 0 10px white,
         0 0 22px rgba(255,255,255,0.2);
 
-    animation: pulse 2s infinite;
+    animation:
+        pulse 2s infinite;
 }
 
 @keyframes pulse {
+
     0% {
         transform: scale(1);
     }
@@ -441,65 +641,90 @@ body::before {
     }
 }
 
-.final {
-    color: red;
-    font-size: 95px;
-    font-family: 'AmericanCaptain';
+/* ========================= */
+/* FOOTER */
+/* ========================= */
 
-    text-shadow:
-        0 0 30px red,
-        0 0 80px red;
+.footer {
+    margin-top: 120px;
 
-    height: 100vh;
-    width: 100vw;
+    font-family: 'VCR';
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    opacity: 0.6;
 
-    animation: finalFlash 1s infinite alternate;
+    font-size: 18px;
+
+    line-height: 1.8;
 }
 
-@keyframes finalFlash {
-    from {
-        opacity: 0.8;
+/* ========================= */
+/* GLITCH */
+/* ========================= */
+
+.glitch {
+    animation: glitch 0.15s;
+}
+
+@keyframes glitch {
+
+    0% {
+        transform: translate(0);
     }
 
-    to {
-        opacity: 1;
+    25% {
+        transform: translate(-5px, 3px);
+    }
+
+    50% {
+        transform: translate(5px, -3px);
+    }
+
+    75% {
+        transform: translate(-3px, 2px);
+    }
+
+    100% {
+        transform: translate(0);
     }
 }
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
 
 @media (max-width: 768px) {
 
-    .logo {
-        width: 95%;
+    #introText {
+        font-size: 48px;
     }
 
     #introLogo {
         width: 90%;
     }
 
-    #intro h1 {
-        font-size: 48px;
+    .logo {
+        width: 95%;
     }
 
     .desc {
         font-size: 22px;
         padding: 0 10px;
-        margin-bottom: 70px;
     }
 
-    .part {
-        padding: 25px;
+    .featuresTitle {
+        font-size: 48px;
+    }
+
+    .feature {
+        font-size: 20px;
     }
 
     .part h2 {
-        font-size: 28px;
+        font-size: 28px !important;
     }
 
     .part p {
-        font-size: 18px;
+        font-size: 18px !important;
     }
 
     .downloadImg {
@@ -521,8 +746,9 @@ body::before {
 
     #countdown {
         font-size: 42px;
-        padding: 22px;
+        padding: 20px;
     }
+
 }
 
 </style>
@@ -530,16 +756,23 @@ body::before {
 
 <body>
 
+<!-- INTRO -->
+
 <div id="intro">
 
-    <h1>WELCOME TO</h1>
+    <div id="introText">
+        WELCOME TO
+    </div>
 
     <img src="logo.png" id="introLogo">
 
 </div>
 
+<!-- BACKGROUND -->
+
 <div class="starBG"></div>
 <div class="starFG"></div>
+<div class="nebula"></div>
 
 <!-- MAIN -->
 
@@ -548,9 +781,44 @@ body::before {
     <img src="logo.png" class="logo">
 
     <p class="desc">
-        This mod, based on the original VS Impostor, will offer a complete expansion and revamp of the mod's storyline.<br><br>
-        Including 36 weeks, 126 songs, and 4 story sections!
+        This mod, based on the original VS Impostor, will offer a complete expansion and revamp of the mod's storyline.
     </p>
+
+    <!-- FEATURES -->
+
+    <div class="featuresTitle">
+        FEATURES
+    </div>
+
+    <div class="features">
+
+        <div class="feature">
+            36 WEEKS
+        </div>
+
+        <div class="feature">
+            126 SONGS
+        </div>
+
+        <div class="feature">
+            FULL STORY EXPANSION
+        </div>
+
+        <div class="feature">
+            NEW CUTSCENES
+        </div>
+
+        <div class="feature">
+            REMASTERED CONTENT
+        </div>
+
+        <div class="feature">
+            FOUR STORY SECTIONS
+        </div>
+
+    </div>
+
+    <!-- PARTS -->
 
     <div class="parts">
 
@@ -566,6 +834,8 @@ body::before {
 
     </div>
 
+    <!-- DOWNLOAD -->
+
     <a href="https://drive.google.com/file/d/1mbjDU6dhLVA-JyimDpUVG6vg__f3gvNS/view?usp=sharing" target="_blank">
 
         <div class="downloadWrap">
@@ -574,23 +844,53 @@ body::before {
 
     </a>
 
-    <p class="downloadText">DOWNLOAD THE DEMO!</p>
+    <div class="downloadText">
+        DOWNLOAD THE DEMO!
+    </div>
+
+    <!-- TRAILER -->
 
     <a href="https://youtu.be/CeiaZoNLYV4" target="_blank" class="trailerLink">
         WATCH THE TRAILER 2.5 NOW!
     </a>
 
-    <div id="comingText">THE PARADOX IS COMING</div>
+    <!-- COUNTDOWN -->
 
-    <div id="countdown">LOADING...</div>
+    <div id="comingText">
+        THE PARADOX IS COMING
+    </div>
+
+    <div id="countdown">
+        LOADING...
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+        VS IMPOSTOR PARADOX © 2026
+        <br>
+        CREATED BY CURRENCY DEV TEAM
+    </div>
 
 </div>
 
+<!-- AUDIO -->
+
+<audio autoplay loop>
+    <source src="ambience.mp3" type="audio/mpeg">
+</audio>
+
 <script>
 
-const targetDate = new Date("July 31, 2026 00:00:00").getTime();
+/* ========================= */
+/* COUNTDOWN */
+/* ========================= */
 
-const countdownEl = document.getElementById("countdown");
+const targetDate =
+new Date("July 31, 2026 00:00:00").getTime();
+
+const countdownEl =
+document.getElementById("countdown");
 
 function updateCountdown() {
 
@@ -598,13 +898,15 @@ function updateCountdown() {
 
     const distance = targetDate - now;
 
-    if (distance <= 0) {
+    if(distance <= 0){
 
         document.body.innerHTML = "";
 
-        const final = document.createElement("div");
+        const final =
+        document.createElement("div");
 
-        final.textContent = "THE PARADOX HAS BEGUN";
+        final.textContent =
+        "THE PARADOX HAS BEGUN";
 
         final.className = "final";
 
@@ -613,21 +915,99 @@ function updateCountdown() {
         return;
     }
 
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const days =
+    Math.floor(distance / (1000 * 60 * 60 * 24));
 
-    const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+    const hours =
+    Math.floor((distance / (1000 * 60 * 60)) % 24);
 
-    const minutes = Math.floor((distance / (1000 * 60)) % 60);
+    const minutes =
+    Math.floor((distance / (1000 * 60)) % 60);
 
-    const seconds = Math.floor((distance / 1000) % 60);
+    const seconds =
+    Math.floor((distance / 1000) % 60);
 
     countdownEl.textContent =
-        `${days}D ${hours}H ${minutes}M ${seconds}S`;
+    `${days}D ${hours}H ${minutes}M ${seconds}S`;
 }
 
 updateCountdown();
 
 setInterval(updateCountdown, 1000);
+
+/* ========================= */
+/* INTRO REMOVE */
+/* ========================= */
+
+setTimeout(() => {
+
+    document.getElementById("intro")
+    .style.display = "none";
+
+}, 6000);
+
+/* ========================= */
+/* PARALLAX */
+/* ========================= */
+
+document.addEventListener("mousemove", (e) => {
+
+    const x =
+    (e.clientX / window.innerWidth - 0.5);
+
+    const y =
+    (e.clientY / window.innerHeight - 0.5);
+
+    document.querySelector(".starFG")
+    .style.transform =
+    `translate(${x * 30}px, ${y * 30}px)`;
+
+    document.querySelector(".logo")
+    .style.transform =
+    `translate(${x * 10}px, ${y * 10}px)`;
+});
+
+/* ========================= */
+/* SECRET */
+/* ========================= */
+
+let logoClicks = 0;
+
+document.querySelector(".logo")
+.addEventListener("click", () => {
+
+    logoClicks++;
+
+    if(logoClicks >= 5){
+
+        document.body.classList.add("glitch");
+
+        setTimeout(() => {
+            document.body.classList.remove("glitch");
+        }, 150);
+
+        alert("THE PARADOX IS WATCHING.");
+
+        logoClicks = 0;
+    }
+});
+
+/* ========================= */
+/* RANDOM GLITCH */
+/* ========================= */
+
+setInterval(() => {
+
+    if(Math.random() > 0.75){
+
+        document.body.classList.add("glitch");
+
+        setTimeout(() => {
+            document.body.classList.remove("glitch");
+        }, 120);
+    }
+
+}, 7000);
 
 </script>
 
