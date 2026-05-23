@@ -3,25 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Impostor Paradox</title>
-
 <link rel="icon" href="defeat23.png" type="image/png">
-
 <style>
 
 @font-face {
     font-family: 'AmericanCaptain';
     src: url('american-captain.ttf');
 }
-
 @font-face {
     font-family: 'VCR';
     src: url('VCR_OSD_MONO.ttf');
 }
 
-* {
+*, *::before, *::after {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 html {
@@ -29,22 +27,17 @@ html {
 }
 
 body {
-    margin: 0;
-    background: black;
+    background: #000;
     color: #f2f2f2;
     overflow-x: hidden;
     text-align: center;
     cursor: url('cursor.png'), auto;
 }
 
-/* ========================= */
-/* INTRO */
-/* ========================= */
-
 #intro {
     position: fixed;
     inset: 0;
-    background: black;
+    background: #000;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -53,63 +46,110 @@ body {
     overflow: hidden;
 }
 
+#introScanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.15) 2px,
+        rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
 #introText {
     font-family: 'AmericanCaptain';
     font-size: 75px;
-    letter-spacing: 5px;
-
+    letter-spacing: 8px;
     opacity: 0;
+    position: relative;
+    z-index: 2;
+    animation: introTextReveal 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+}
 
-    animation:
-        introTextFade 1.5s forwards;
+#introText::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    color: #ff003c;
+    clip-path: inset(0 100% 0 0);
+    animation: introTextGlitch 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+    opacity: 0.6;
 }
 
 #introLogo {
     width: 470px;
-
     margin-top: 25px;
-
     opacity: 0;
-
     position: relative;
-
-    filter:
-        drop-shadow(0 0 20px white)
-        drop-shadow(0 0 40px rgba(255,255,255,0.3));
-
-    animation:
-        introLogoAppear 2s forwards,
-        introLogoMove 2s forwards;
-
-    animation-delay:
-        1s,
-        4s;
+    z-index: 2;
+    filter: drop-shadow(0 0 25px white) drop-shadow(0 0 60px rgba(255,255,255,0.25));
+    animation: introLogoAppear 1.8s cubic-bezier(0.34,1.56,0.64,1) 1.2s forwards;
 }
 
-@keyframes introTextFade {
-    to {
-        opacity: 1;
-    }
+#introFlash {
+    position: absolute;
+    inset: 0;
+    background: white;
+    opacity: 0;
+    z-index: 3;
+    pointer-events: none;
+    animation: introFlash 0.4s forwards;
+    animation-delay: 1.1s;
 }
 
+@keyframes introTextReveal {
+    from { opacity: 0; letter-spacing: 25px; filter: blur(8px); }
+    to   { opacity: 1; letter-spacing: 8px;  filter: blur(0); }
+}
+@keyframes introTextGlitch {
+    0%   { clip-path: inset(0 100% 0 0); }
+    100% { clip-path: inset(0 0% 0 0); opacity: 0; }
+}
 @keyframes introLogoAppear {
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.85) translateY(20px); filter: blur(12px) drop-shadow(0 0 0px white); }
+    to   { opacity: 1; transform: scale(1) translateY(0); filter: drop-shadow(0 0 25px white) drop-shadow(0 0 60px rgba(255,255,255,0.25)); }
+}
+@keyframes introFlash {
+    0%   { opacity: 0; }
+    30%  { opacity: 0.6; }
+    100% { opacity: 0; }
 }
 
-@keyframes introLogoMove {
-    to {
-        transform:
-            translateY(-320px)
-            scale(0.96);
-    }
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.018),
+        rgba(255,255,255,0.018) 1px,
+        transparent 1px,
+        transparent 4px
+    );
+    pointer-events: none;
+    z-index: 998;
 }
 
-/* ========================= */
-/* STAR BACKGROUND */
-/* ========================= */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+    z-index: 997;
+}
+
+#particles {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+}
 
 .starBG,
 .starFG {
@@ -120,635 +160,568 @@ body {
     height: 200%;
     background-repeat: repeat;
     z-index: -5;
-    transition: transform 0.15s linear;
+    will-change: transform;
 }
 
 .starBG {
     background-image: url('starBG.png');
     background-size: 700px;
-    opacity: 0.35;
-    animation: bgMove 300s linear infinite;
+    opacity: 0.3;
+    animation: bgMove 250s linear infinite;
 }
 
 .starFG {
     background-image: url('starFG.png');
     background-size: 500px;
-    opacity: 0.7;
-    animation: fgMove 180s linear infinite;
+    opacity: 0.65;
+    animation: fgMove 160s linear infinite;
+    transition: transform 0.08s linear;
 }
 
 @keyframes bgMove {
-    from {
-        background-position: 0 0;
-    }
-
-    to {
-        background-position: 0 -20000px;
-    }
+    from { background-position: 0 0; }
+    to   { background-position: 150px -20000px; }
 }
-
 @keyframes fgMove {
-    from {
-        background-position: 0 0;
-    }
-
-    to {
-        background-position: 0 -20000px;
-    }
+    from { background-position: 0 0; }
+    to   { background-position: -100px -20000px; }
 }
-
-/* ========================= */
-/* NEBULA */
-/* ========================= */
 
 .nebula {
     position: fixed;
     inset: 0;
-
-    background:
-        radial-gradient(circle at center,
-        rgba(125,0,95,0.18),
-        transparent 60%);
-
     z-index: -4;
-
     pointer-events: none;
+    animation: nebulaPulse 8s ease-in-out infinite;
 }
 
-/* ========================= */
-/* VHS EFFECT */
-/* ========================= */
-
-body::before {
+.nebula::before {
     content: "";
-
-    position: fixed;
+    position: absolute;
     inset: 0;
-
-    background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.02),
-        rgba(255,255,255,0.02) 1px,
-        transparent 1px,
-        transparent 3px
-    );
-
-    pointer-events: none;
-
-    z-index: 999;
+    background:
+        radial-gradient(ellipse at 30% 40%, rgba(125,0,95,0.22), transparent 55%),
+        radial-gradient(ellipse at 70% 60%, rgba(7,40,100,0.18), transparent 50%);
 }
 
-/* ========================= */
-/* MAIN CONTENT */
-/* ========================= */
+.nebula::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 60% 20%, rgba(80,0,120,0.12), transparent 45%),
+        radial-gradient(ellipse at 20% 80%, rgba(0,60,120,0.1), transparent 40%);
+    animation: nebulaDrift 14s ease-in-out infinite alternate;
+}
+
+@keyframes nebulaPulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.7; }
+}
+@keyframes nebulaDrift {
+    from { transform: translate(0, 0); }
+    to   { transform: translate(30px, -20px); }
+}
 
 .mainContent {
     display: flex;
     flex-direction: column;
     align-items: center;
-
     min-height: 100vh;
-
-    padding:
-        60px
-        20px
-        140px;
-
-    animation: fadeIn 2s ease;
+    padding: 60px 20px 140px;
+    opacity: 0;
+    transition: opacity 1s ease;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(35px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* ========================= */
-/* LOGO */
-/* ========================= */
+.logoWrap {
+    position: relative;
+    margin-bottom: 55px;
+    display: inline-block;
+}
 
 .logo {
     width: 450px;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.8)) drop-shadow(0 0 50px rgba(255,255,255,0.2));
+    animation: floatLogo 5s ease-in-out infinite;
+    transition: filter 0.3s ease;
+}
 
-    margin-bottom: 55px;
+.logo:hover {
+    filter: drop-shadow(0 0 35px white) drop-shadow(0 0 70px rgba(200,100,255,0.4));
+    animation-play-state: paused;
+}
 
-    filter:
-        drop-shadow(0 0 25px white)
-        drop-shadow(0 0 45px rgba(255,255,255,0.2));
-
-    animation:
-        floatLogo 4s ease-in-out infinite;
-
-    transition:
-        transform 0.2s linear;
+.logoGlow {
+    position: absolute;
+    inset: -30%;
+    background: radial-gradient(ellipse at center, rgba(150,0,120,0.25), transparent 65%);
+    animation: glowPulse 3s ease-in-out infinite;
+    pointer-events: none;
 }
 
 @keyframes floatLogo {
-
-    0% {
-        transform: translateY(0px);
-    }
-
-    50% {
-        transform: translateY(-12px);
-    }
-
-    100% {
-        transform: translateY(0px);
-    }
+    0%   { transform: translateY(0px) rotate(0deg); }
+    25%  { transform: translateY(-8px) rotate(0.3deg); }
+    50%  { transform: translateY(-14px) rotate(0deg); }
+    75%  { transform: translateY(-8px) rotate(-0.3deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
 }
-
-/* ========================= */
-/* DESCRIPTION */
-/* ========================= */
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.1); }
+}
 
 .desc {
     font-family: 'AmericanCaptain';
-
     font-size: 32px;
-
     max-width: 850px;
-
-    line-height: 1.45;
-
-    opacity: 0.92;
-
-    margin-bottom: 100px;
-
-    text-shadow:
-        0 0 10px rgba(255,255,255,0.08);
+    line-height: 1.5;
+    opacity: 0.88;
+    margin-bottom: 110px;
+    text-shadow: 0 0 12px rgba(255,255,255,0.1);
+    transition-delay: 0.15s;
 }
 
-/* ========================= */
-/* FEATURES */
-/* ========================= */
+.divider {
+    width: 100%;
+    max-width: 700px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+    margin: 0 auto 60px;
+    position: relative;
+}
+.divider::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 12px white;
+}
 
 .featuresTitle {
     font-family: 'AmericanCaptain';
     font-size: 65px;
-    letter-spacing: 3px;
-
-    margin-bottom: 45px;
-
+    letter-spacing: 4px;
+    margin-bottom: 50px;
     text-shadow:
         0 0 15px white,
-        0 0 30px rgba(255,255,255,0.2);
+        0 0 35px rgba(255,255,255,0.18);
+    position: relative;
+    display: inline-block;
+}
+
+.featuresTitle::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, white, transparent);
 }
 
 .features {
     width: 100%;
     max-width: 1100px;
-
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-
-    gap: 25px;
-
-    margin-bottom: 120px;
+    gap: 22px;
+    margin-bottom: 130px;
 }
 
 .feature {
-    padding: 30px;
-
-    border-radius: 24px;
-
-    background: rgba(255,255,255,0.04);
-
-    border: 1px solid rgba(255,255,255,0.08);
-
-    backdrop-filter: blur(10px);
-
+    padding: 32px 24px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(14px);
     font-family: 'VCR';
-
-    font-size: 24px;
-
+    font-size: 22px;
     box-shadow:
-        0 0 20px rgba(255,255,255,0.05);
+        0 0 20px rgba(255,255,255,0.04),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                box-shadow 0.35s ease,
+                border-color 0.35s ease,
+                background 0.35s ease;
+    position: relative;
+    overflow: hidden;
+}
 
-    transition: 0.3s;
+.feature::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
 }
 
 .feature:hover {
-    transform: translateY(-6px) scale(1.03);
-
+    transform: translateY(-8px) scale(1.04);
     box-shadow:
-        0 0 30px rgba(255,255,255,0.15);
+        0 12px 40px rgba(200,100,255,0.2),
+        0 0 0 1px rgba(200,100,255,0.25);
+    border-color: rgba(200,100,255,0.35);
+    background: rgba(150,0,120,0.1);
 }
 
-/* ========================= */
-/* PARTS */
-/* ========================= */
+.feature:hover::before {
+    opacity: 1;
+}
 
 .parts {
     width: 100%;
     max-width: 950px;
-    margin-bottom: 120px;
+    margin-bottom: 130px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 }
 
-/* PART ONE */
-
-.part:first-child {
+.part {
     position: relative;
-
-    padding: 40px;
-
-    margin-bottom: 45px;
-
-    border-radius: 24px;
-
-    background: rgba(125, 0, 95, 0.12);
-
-    border: 1px solid rgba(125, 0, 95, 0.45);
-
-    backdrop-filter: blur(10px);
-
-    box-shadow:
-        0 0 30px rgba(125, 0, 95, 0.45),
-        inset 0 0 25px rgba(125, 0, 95, 0.18);
-
+    padding: 42px 40px;
+    border-radius: 22px;
+    backdrop-filter: blur(14px);
     overflow: hidden;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease;
 }
 
-.part:first-child::before {
+.part:hover {
+    transform: scale(1.015);
+}
+
+.part::before {
     content: "";
-
     position: absolute;
-
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 2px;
-
-    background:
-        linear-gradient(
-        to right,
-        transparent,
-        #7D005F,
-        transparent
-    );
+    top: 0; left: 0;
+    width: 100%; height: 2px;
 }
 
-.part:first-child h2 {
-    font-family: 'VCR';
-    font-size: 46px;
-
-    color: red;
-
-    text-shadow:
-        0 0 10px #7D005F,
-        0 0 20px #7D005F,
-        0 0 40px #7D005F;
+.part::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent 55%);
+    pointer-events: none;
 }
 
-.part:first-child p {
-    font-family: 'VCR';
+.partCorner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-style: solid;
+}
+.partCorner.tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
+.partCorner.tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
+.partCorner.bl { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; }
+.partCorner.br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
 
+.part.partOne {
+    background: rgba(125, 0, 95, 0.1);
+    border: 1px solid rgba(125, 0, 95, 0.4);
+    box-shadow:
+        0 0 35px rgba(125, 0, 95, 0.4),
+        inset 0 0 30px rgba(125, 0, 95, 0.12);
+}
+.part.partOne::before {
+    background: linear-gradient(to right, transparent, #7D005F, transparent);
+}
+.part.partOne .partCorner { border-color: rgba(125, 0, 95, 0.7); }
+.part.partOne h2 {
+    font-family: 'VCR';
+    font-size: 44px;
+    color: #ff4488;
+    text-shadow: 0 0 10px #7D005F, 0 0 25px #7D005F, 0 0 50px rgba(125,0,95,0.5);
+    margin-bottom: 12px;
+}
+.part.partOne p {
+    font-family: 'VCR';
     font-size: 24px;
-
-    color: red;
-
-    text-shadow:
-        0 0 10px #7D005F,
-        0 0 20px #7D005F;
+    color: #ff6699;
+    text-shadow: 0 0 10px #7D005F, 0 0 20px #7D005F;
 }
 
-/* PART TWO */
+.part.partTwo {
+    background: rgba(0, 120, 200, 0.08);
+    border: 1px solid rgba(7, 148, 228, 0.45);
+    box-shadow:
+        0 0 35px rgba(7, 148, 228, 0.4),
+        inset 0 0 30px rgba(7, 148, 228, 0.1);
+}
+.part.partTwo::before {
+    background: linear-gradient(to right, transparent, #0794E4, transparent);
+}
+.part.partTwo .partCorner { border-color: rgba(7,148,228,0.7); }
+.part.partTwo h2 {
+    font-family: 'VCR';
+    font-size: 44px;
+    color: #00ddff;
+    text-shadow: 0 0 10px #0794E4, 0 0 25px #0794E4, 0 0 50px rgba(7,148,228,0.5);
+    margin-bottom: 12px;
+}
+.part.partTwo p {
+    font-family: 'VCR';
+    font-size: 24px;
+    color: #55eeff;
+    text-shadow: 0 0 10px #0794E4, 0 0 20px #0794E4;
+}
 
-.part:last-child {
+.downloadSection {
+    margin-bottom: 30px;
     position: relative;
-
-    padding: 40px;
-
-    border-radius: 24px;
-
-    background: rgba(0,255,255,0.08);
-
-    border: 1px solid rgba(7,148,228,0.5);
-
-    backdrop-filter: blur(10px);
-
-    box-shadow:
-        0 0 30px rgba(7,148,228,0.45),
-        inset 0 0 25px rgba(7,148,228,0.18);
-
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-
-.part:last-child::before {
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 2px;
-
-    background:
-        linear-gradient(
-        to right,
-        transparent,
-        #0794E4,
-        transparent
-    );
-}
-
-.part:last-child h2 {
-    font-family: 'VCR';
-    font-size: 46px;
-
-    color: #00FFFF;
-
-    text-shadow:
-        0 0 10px #0794E4,
-        0 0 20px #0794E4,
-        0 0 40px #0794E4;
-}
-
-.part:last-child p {
-    font-family: 'VCR';
-
-    font-size: 24px;
-
-    color: #00FFFF;
-
-    text-shadow:
-        0 0 10px #0794E4,
-        0 0 20px #0794E4;
-}
-
-/* ========================= */
-/* DOWNLOAD */
-/* ========================= */
 
 .downloadWrap {
     position: relative;
     display: inline-block;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
 }
 
 .downloadWrap::before {
     content: "";
-
     position: absolute;
-
-    top: 50%;
-    left: 50%;
-
-    width: 135%;
-    height: 135%;
-
+    top: 50%; left: 50%;
+    width: 130%; height: 130%;
     transform: translate(-50%, -50%);
-
-    background: white;
-
-    filter: blur(50px);
-
-    opacity: 0.18;
-
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.2), transparent 65%);
+    filter: blur(30px);
+    opacity: 0.5;
     z-index: -1;
-
+    transition: opacity 0.35s ease;
     border-radius: 25px;
+}
+
+.downloadWrap:hover::before {
+    opacity: 1;
 }
 
 .downloadImg {
     width: 420px;
-
     cursor: pointer;
-
-    transition: 0.35s;
+    border-radius: 14px;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), filter 0.35s ease, box-shadow 0.35s ease;
+    display: block;
 }
 
 .downloadImg:hover {
-    transform:
-        scale(1.08)
-        rotate(-1deg);
-
-    filter:
-        drop-shadow(0 0 25px white);
+    transform: scale(1.07) rotate(-0.8deg);
+    filter: drop-shadow(0 0 30px rgba(255,255,255,0.9));
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
 .downloadText {
-    margin-top: 20px;
-
+    margin-top: 22px;
     font-family: 'AmericanCaptain';
-
     font-size: 28px;
-
-    letter-spacing: 2px;
-
-    margin-bottom: 25px;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, #fff, #d0aaff, #fff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: textShimmer 3s linear infinite;
+    margin-bottom: 30px;
 }
 
-/* ========================= */
-/* TRAILER */
-/* ========================= */
+@keyframes textShimmer {
+    from { background-position: 0% center; }
+    to   { background-position: 200% center; }
+}
 
 .trailerLink {
-    margin-bottom: 100px;
-
+    margin-bottom: 110px;
     font-family: 'AmericanCaptain';
-
     font-size: 32px;
-
-    letter-spacing: 2px;
-
+    letter-spacing: 3px;
     color: #ff3b3b;
-
     text-decoration: none;
-
     text-shadow:
-        0 0 10px rgba(255,59,59,0.8),
-        0 0 25px rgba(255,59,59,0.5);
+        0 0 12px rgba(255,59,59,0.9),
+        0 0 30px rgba(255,59,59,0.5);
+    transition: all 0.3s ease;
+    position: relative;
+    display: inline-block;
+}
 
-    transition: 0.3s;
+.trailerLink::after {
+    content: "";
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 2px;
+    background: linear-gradient(to right, #ff3b3b, #ff8888);
+    transition: width 0.3s ease;
 }
 
 .trailerLink:hover {
     color: white;
-
-    transform: scale(1.05);
-
-    text-shadow:
-        0 0 15px white,
-        0 0 35px red;
+    transform: scale(1.06);
+    text-shadow: 0 0 18px white, 0 0 40px red, 0 0 60px rgba(255,0,0,0.3);
 }
 
-/* ========================= */
-/* COUNTDOWN */
-/* ========================= */
+.trailerLink:hover::after {
+    width: 100%;
+}
+
+.countdownSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 80px;
+}
 
 #comingText {
-    margin-bottom: 25px;
-
     font-family: 'AmericanCaptain';
-
     font-size: 60px;
+    letter-spacing: 4px;
+    margin-bottom: 30px;
+    text-shadow: 0 0 20px white, 0 0 45px rgba(255,255,255,0.18);
+    animation: comingTextFloat 4s ease-in-out infinite;
+}
 
-    letter-spacing: 3px;
-
-    text-shadow:
-        0 0 15px white,
-        0 0 40px rgba(255,255,255,0.2);
+@keyframes comingTextFloat {
+    0%, 100% { transform: translateY(0); text-shadow: 0 0 20px white, 0 0 45px rgba(255,255,255,0.18); }
+    50%       { transform: translateY(-5px); text-shadow: 0 0 30px white, 0 0 65px rgba(255,255,255,0.3); }
 }
 
 #countdown {
     font-family: 'AmericanCaptain';
-
-    font-size: 85px;
-
-    padding: 30px 60px;
-
-    border-radius: 24px;
-
-    border: 2px solid rgba(255,255,255,0.14);
-
-    background: rgba(255,255,255,0.04);
-
-    backdrop-filter: blur(12px);
-
+    font-size: 82px;
+    padding: 28px 65px;
+    border-radius: 22px;
+    border: 2px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.035);
+    backdrop-filter: blur(16px);
     box-shadow:
-        0 0 35px rgba(255,255,255,0.1),
-        inset 0 0 20px rgba(255,255,255,0.04);
-
-    text-shadow:
-        0 0 10px white,
-        0 0 22px rgba(255,255,255,0.2);
-
-    animation:
-        pulse 2s infinite;
+        0 0 40px rgba(255,255,255,0.08),
+        inset 0 0 25px rgba(255,255,255,0.03),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    text-shadow: 0 0 12px white, 0 0 25px rgba(255,255,255,0.22);
+    animation: countdownPulse 2s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes pulse {
-
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.03);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+#countdown::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.04), transparent);
+    animation: countdownSheen 4s ease-in-out infinite;
 }
 
-/* ========================= */
-/* FOOTER */
-/* ========================= */
+@keyframes countdownPulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.025); }
+}
+@keyframes countdownSheen {
+    0%   { left: -100%; }
+    50%  { left: 150%; }
+    100% { left: 150%; }
+}
 
 .footer {
-    margin-top: 120px;
-
+    margin-top: 100px;
     font-family: 'VCR';
-
-    opacity: 0.6;
-
-    font-size: 18px;
-
-    line-height: 1.8;
+    opacity: 0.5;
+    font-size: 17px;
+    line-height: 2;
+    letter-spacing: 1px;
+    transition: opacity 0.3s;
 }
+.footer:hover { opacity: 0.8; }
 
-/* ========================= */
-/* GLITCH */
-/* ========================= */
+@keyframes glitchAnim {
+    0%   { transform: translate(0); clip-path: inset(0 0 100% 0); }
+    10%  { transform: translate(-4px, 2px); clip-path: inset(20% 0 60% 0); }
+    20%  { transform: translate(4px, -2px); clip-path: inset(50% 0 20% 0); }
+    30%  { transform: translate(-3px, 3px); clip-path: inset(80% 0 5% 0); }
+    40%  { transform: translate(3px, -3px); clip-path: inset(10% 0 70% 0); }
+    50%  { transform: translate(0); clip-path: inset(0 0 100% 0); }
+    100% { transform: translate(0); clip-path: inset(0 0 100% 0); }
+}
 
 .glitch {
-    animation: glitch 0.15s;
+    animation: glitchBody 0.18s steps(1) forwards;
 }
 
-@keyframes glitch {
-
-    0% {
-        transform: translate(0);
-    }
-
-    25% {
-        transform: translate(-5px, 3px);
-    }
-
-    50% {
-        transform: translate(5px, -3px);
-    }
-
-    75% {
-        transform: translate(-3px, 2px);
-    }
-
-    100% {
-        transform: translate(0);
-    }
+@keyframes glitchBody {
+    0%   { filter: none; }
+    20%  { filter: hue-rotate(90deg) contrast(1.4); transform: skewX(-1deg); }
+    40%  { filter: hue-rotate(-90deg) saturate(2); transform: skewX(1deg); }
+    60%  { filter: invert(0.1) hue-rotate(180deg); transform: skewX(0deg); }
+    80%  { filter: contrast(1.2); transform: skewX(-0.5deg); }
+    100% { filter: none; transform: none; }
 }
 
-/* ========================= */
-/* RESPONSIVE */
-/* ========================= */
+.finalScreen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    z-index: 99998;
+    animation: fadeIn 1.5s ease forwards;
+}
+
+.finalText {
+    font-family: 'AmericanCaptain';
+    font-size: 80px;
+    letter-spacing: 8px;
+    text-shadow: 0 0 20px white, 0 0 60px rgba(255,255,255,0.3);
+    animation: finalPulse 2s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes finalPulse {
+    0%, 100% { text-shadow: 0 0 20px white, 0 0 60px rgba(255,255,255,0.3); }
+    50%       { text-shadow: 0 0 40px white, 0 0 100px rgba(255,100,255,0.4); }
+}
 
 @media (max-width: 768px) {
-
-    #introText {
-        font-size: 48px;
-    }
-
-    #introLogo {
-        width: 90%;
-    }
-
-    .logo {
-        width: 95%;
-    }
-
-    .desc {
-        font-size: 22px;
-        padding: 0 10px;
-    }
-
-    .featuresTitle {
-        font-size: 48px;
-    }
-
-    .feature {
-        font-size: 20px;
-    }
-
-    .part h2 {
-        font-size: 28px !important;
-    }
-
-    .part p {
-        font-size: 18px !important;
-    }
-
-    .downloadImg {
-        width: 95%;
-    }
-
-    .downloadText {
-        font-size: 22px;
-    }
-
-    .trailerLink {
-        font-size: 24px;
-        padding: 0 10px;
-    }
-
-    #comingText {
-        font-size: 42px;
-    }
-
-    #countdown {
-        font-size: 42px;
-        padding: 20px;
-    }
-
+    #introText        { font-size: 46px; letter-spacing: 5px; }
+    #introLogo        { width: 90%; }
+    .logo             { width: 95%; }
+    .desc             { font-size: 22px; padding: 0 12px; }
+    .featuresTitle    { font-size: 46px; }
+    .feature          { font-size: 19px; }
+    .part h2          { font-size: 26px !important; }
+    .part p           { font-size: 18px !important; }
+    .downloadImg      { width: 95%; }
+    .downloadText     { font-size: 22px; }
+    .trailerLink      { font-size: 24px; padding: 0 10px; }
+    #comingText       { font-size: 40px; }
+    #countdown        { font-size: 38px; padding: 18px 22px; }
+    .finalText        { font-size: 38px; letter-spacing: 3px; text-align: center; padding: 20px; }
 }
 
 </style>
@@ -756,260 +729,348 @@ body::before {
 
 <body>
 
-<!-- INTRO -->
-
 <div id="intro">
-
-    <div id="introText">
-        WELCOME TO
-    </div>
-
-    <img src="logo.png" id="introLogo">
-
+    <div id="introFlash"></div>
+    <div id="introScanlines"></div>
+    <div id="introText" data-text="WELCOME TO">WELCOME TO</div>
+    <img src="logo.png" id="introLogo" alt="Impostor Paradox">
 </div>
 
-<!-- BACKGROUND -->
-
+<canvas id="particles"></canvas>
 <div class="starBG"></div>
 <div class="starFG"></div>
 <div class="nebula"></div>
 
-<!-- MAIN -->
-
 <div class="mainContent">
 
-    <img src="logo.png" class="logo">
+    <div class="logoWrap reveal">
+        <div class="logoGlow"></div>
+        <img src="logo.png" class="logo" alt="Impostor Paradox">
+    </div>
 
-    <p class="desc">
+    <p class="desc reveal">
         This mod, based on the original VS Impostor, will offer a complete expansion and revamp of the mod's storyline.
     </p>
 
-    <!-- FEATURES -->
+    <div class="divider reveal"></div>
 
-    <div class="featuresTitle">
-        FEATURES
-    </div>
+    <div class="featuresTitle reveal">FEATURES</div>
 
     <div class="features">
-
-        <div class="feature">
-            36 WEEKS
-        </div>
-
-        <div class="feature">
-            126 SONGS
-        </div>
-
-        <div class="feature">
-            FULL STORY EXPANSION
-        </div>
-
-        <div class="feature">
-            NEW CUTSCENES
-        </div>
-
-        <div class="feature">
-            REMASTERED CONTENT
-        </div>
-
-        <div class="feature">
-            FOUR STORY SECTIONS
-        </div>
-
+        <div class="feature reveal">36 WEEKS</div>
+        <div class="feature reveal">126 SONGS</div>
+        <div class="feature reveal">FULL STORY EXPANSION</div>
+        <div class="feature reveal">NEW CUTSCENES</div>
+        <div class="feature reveal">REMASTERED CONTENT</div>
+        <div class="feature reveal">FOUR STORY SECTIONS</div>
     </div>
 
-    <!-- PARTS -->
+    <div class="divider reveal"></div>
 
     <div class="parts">
-
-        <div class="part">
+        <div class="part partOne reveal">
+            <div class="partCorner tl"></div>
+            <div class="partCorner tr"></div>
+            <div class="partCorner bl"></div>
+            <div class="partCorner br"></div>
             <h2>Vs. Impostor Paradox [PART ONE]</h2>
             <p>Someday This Year</p>
         </div>
-
-        <div class="part">
+        <div class="part partTwo reveal">
+            <div class="partCorner tl"></div>
+            <div class="partCorner tr"></div>
+            <div class="partCorner bl"></div>
+            <div class="partCorner br"></div>
             <h2>Vs. Impostor Paradox [PART TWO]</h2>
             <p>2027</p>
         </div>
-
     </div>
 
-    <!-- DOWNLOAD -->
-
-    <a href="https://drive.google.com/file/d/1mbjDU6dhLVA-JyimDpUVG6vg__f3gvNS/view?usp=sharing" target="_blank">
-
-        <div class="downloadWrap">
-            <img src="DEMOART.png" class="downloadImg">
-        </div>
-
-    </a>
-
-    <div class="downloadText">
-        DOWNLOAD THE DEMO!
+    <div class="downloadSection reveal">
+        <a href="https://drive.google.com/file/d/1mbjDU6dhLVA-JyimDpUVG6vg__f3gvNS/view?usp=sharing" target="_blank">
+            <div class="downloadWrap">
+                <img src="DEMOART.png" class="downloadImg" alt="Download Demo">
+            </div>
+        </a>
+        <div class="downloadText">DOWNLOAD THE DEMO!</div>
     </div>
 
-    <!-- TRAILER -->
-
-    <a href="https://youtu.be/CeiaZoNLYV4" target="_blank" class="trailerLink">
+    <a href="https://youtu.be/CeiaZoNLYV4" target="_blank" class="trailerLink reveal">
         WATCH THE TRAILER 2.5 NOW!
     </a>
 
-    <!-- COUNTDOWN -->
-
-    <div id="comingText">
-        THE PARADOX IS COMING
+    <div class="countdownSection reveal">
+        <div id="comingText">THE PARADOX IS COMING</div>
+        <div id="countdown">LOADING...</div>
     </div>
 
-    <div id="countdown">
-        LOADING...
-    </div>
-
-    <!-- FOOTER -->
-
-    <div class="footer">
-        VS IMPOSTOR PARADOX © 2026
-        <br>
+    <div class="footer reveal">
+        VS IMPOSTOR PARADOX © 2026<br>
         CREATED BY CURRENCY DEV TEAM
     </div>
 
 </div>
 
-<!-- AUDIO -->
-
 <audio autoplay loop>
     <source src="ambience.mp3" type="audio/mpeg">
+</audio>
+<audio id="defeatAmbience" preload="auto">
+    <source src="defeatambience.ogg" type="audio/ogg">
+</audio>
+<audio id="sfxHover" preload="auto">
+    <source src="hover.ogg" type="audio/ogg">
+</audio>
+<audio id="sfxPanel" preload="auto">
+    <source src="panelappear.ogg" type="audio/ogg">
+</audio>
+<audio id="sfxPop" preload="auto">
+    <source src="pop.ogg" type="audio/ogg">
 </audio>
 
 <script>
 
-/* ========================= */
-/* COUNTDOWN */
-/* ========================= */
+window.scrollTo(0, 0);
+history.scrollRestoration = "manual";
 
-const targetDate =
-new Date("July 31, 2026 00:00:00").getTime();
+(function() {
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    const PARTICLE_COUNT = 55;
+    const particles = [];
 
-const countdownEl =
-document.getElementById("countdown");
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const colors = [
+        'rgba(200,100,255,',
+        'rgba(120,0,200,',
+        'rgba(0,180,255,',
+        'rgba(255,255,255,',
+    ];
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push({
+            x:     Math.random() * 2000 - 1000,
+            y:     Math.random() * 2000 - 1000,
+            r:     Math.random() * 1.8 + 0.4,
+            dx:    (Math.random() - 0.5) * 0.25,
+            dy:    -Math.random() * 0.35 - 0.1,
+            alpha: Math.random() * 0.6 + 0.1,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            flicker: Math.random() * Math.PI * 2,
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+        for (const p of particles) {
+            p.x += p.dx;
+            p.y += p.dy;
+            p.flicker += 0.025;
+            if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+            if (p.x < -10) p.x = W + 10;
+            if (p.x > W + 10) p.x = -10;
+            const a = p.alpha * (0.7 + 0.3 * Math.sin(p.flicker));
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = p.color + a + ')';
+            ctx.fill();
+        }
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
+(function() {
+    const els = document.querySelectorAll('.reveal');
+
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                const siblings = [...e.target.parentElement.querySelectorAll('.reveal:not(.visible)')];
+                const idx = siblings.indexOf(e.target);
+                const delay = idx >= 0 ? idx * 80 : 0;
+                setTimeout(() => e.target.classList.add('visible'), delay);
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    els.forEach(el => io.observe(el));
+})();
+
+const targetDate = new Date("July 31, 2026 00:00:00").getTime();
+const countdownEl = document.getElementById("countdown");
+
+function pad(n) { return String(n).padStart(2, '0'); }
 
 function updateCountdown() {
-
-    const now = Date.now();
-
-    const distance = targetDate - now;
-
-    if(distance <= 0){
-
+    const distance = targetDate - Date.now();
+    if (distance <= 0) {
         document.body.innerHTML = "";
-
-        const final =
-        document.createElement("div");
-
-        final.textContent =
-        "THE PARADOX HAS BEGUN";
-
-        final.className = "final";
-
-        document.body.appendChild(final);
-
+        const wrap = document.createElement("div");
+        wrap.className = "finalScreen";
+        const txt = document.createElement("div");
+        txt.className = "finalText";
+        txt.textContent = "THE PARADOX HAS BEGUN";
+        wrap.appendChild(txt);
+        document.body.appendChild(wrap);
         return;
     }
-
-    const days =
-    Math.floor(distance / (1000 * 60 * 60 * 24));
-
-    const hours =
-    Math.floor((distance / (1000 * 60 * 60)) % 24);
-
-    const minutes =
-    Math.floor((distance / (1000 * 60)) % 60);
-
-    const seconds =
-    Math.floor((distance / 1000) % 60);
-
-    countdownEl.textContent =
-    `${days}D ${hours}H ${minutes}M ${seconds}S`;
+    const d = Math.floor(distance / 86400000);
+    const h = Math.floor((distance / 3600000) % 24);
+    const m = Math.floor((distance / 60000) % 60);
+    const s = Math.floor((distance / 1000) % 60);
+    countdownEl.textContent = `${d}D  ${pad(h)}H  ${pad(m)}M  ${pad(s)}S`;
 }
-
 updateCountdown();
-
 setInterval(updateCountdown, 1000);
 
-/* ========================= */
-/* INTRO REMOVE */
-/* ========================= */
+const introEl   = document.getElementById("intro");
+const introLogo = document.getElementById("introLogo");
+let introDone   = false;
 
-setTimeout(() => {
+function dismissIntro() {
+    if (introDone) return;
+    introDone = true;
+    glitchLocked = true;
 
-    document.getElementById("intro")
-    .style.display = "none";
+    const src  = introLogo.getBoundingClientRect();
+    const srcCX = src.left + src.width  / 2;
+    const srcCY = src.top  + src.height / 2;
 
-}, 6000);
+    const dest   = document.querySelector(".logo").getBoundingClientRect();
+    const dstCX  = dest.left + dest.width  / 2;
+    const dstCY  = dest.top  + dest.height / 2;
 
-/* ========================= */
-/* PARALLAX */
-/* ========================= */
+    const dx = dstCX - srcCX;
+    const dy = dstCY - srcCY;
+    const scaleTarget = dest.width / src.width;
+
+    introLogo.animate([
+        { transform: "translate(0, 0) scale(1)" },
+        { transform: `translate(${dx}px, ${dy}px) scale(${scaleTarget})` }
+    ], {
+        duration: 800,
+        easing:   "cubic-bezier(0.4, 0, 0.2, 1)",
+        fill:     "forwards"
+    });
+
+    setTimeout(() => {
+        introEl.style.transition  = "opacity 0.9s ease";
+        introEl.style.opacity     = "0";
+        document.querySelector(".mainContent").style.opacity = "1";
+    }, 500);
+
+    setTimeout(() => {
+        introEl.style.display = "none";
+        document.body.style.overflow = "";
+        glitchLocked = false;
+        const da = document.getElementById("defeatAmbience");
+        da.volume = 0.3;
+        da.loop = true;
+        da.play();
+    }, 1400);
+}
+
+const mainLogo = document.querySelector(".logo");
+const logoWrap = document.querySelector(".logoWrap");
+logoWrap.style.transition = "none";
+logoWrap.classList.add("visible");
+
+document.body.style.overflow = "hidden";
+
+setTimeout(dismissIntro, 6200);
+introEl.addEventListener("click", dismissIntro);
+
+const starFG = document.querySelector(".starFG");
+const logoImg = document.querySelector(".logo");
+let mouseX = 0, mouseY = 0;
+let curX = 0, curY = 0;
 
 document.addEventListener("mousemove", (e) => {
-
-    const x =
-    (e.clientX / window.innerWidth - 0.5);
-
-    const y =
-    (e.clientY / window.innerHeight - 0.5);
-
-    document.querySelector(".starFG")
-    .style.transform =
-    `translate(${x * 30}px, ${y * 30}px)`;
-
-    document.querySelector(".logo")
-    .style.transform =
-    `translate(${x * 10}px, ${y * 10}px)`;
+    mouseX = (e.clientX / window.innerWidth  - 0.5);
+    mouseY = (e.clientY / window.innerHeight - 0.5);
 });
 
-/* ========================= */
-/* SECRET */
-/* ========================= */
+(function parallaxTick() {
+    curX += (mouseX - curX) * 0.06;
+    curY += (mouseY - curY) * 0.06;
+    starFG.style.transform = `translate(${curX * 35}px, ${curY * 35}px)`;
+    if (logoImg) {
+        logoImg.style.marginLeft  = `${curX * 12}px`;
+        logoImg.style.marginRight = `${-curX * 12}px`;
+    }
+    requestAnimationFrame(parallaxTick);
+})();
 
 let logoClicks = 0;
+const logoGlitchMessages = [
+    "THE PARADOX IS WATCHING.",
+    "YOU WERE NEVER SAFE.",
+    "THEY KNOW YOU'RE HERE.",
+    "TRUST NO ONE.",
+    "THE IMPOSTOR SEES YOU.",
+];
 
-document.querySelector(".logo")
-.addEventListener("click", () => {
+if (logoImg) {
+    logoImg.addEventListener("click", () => {
+        logoClicks++;
+        if (logoClicks >= 5) {
+            triggerGlitch();
+            setTimeout(() => {
+                const msg = logoGlitchMessages[Math.floor(Math.random() * logoGlitchMessages.length)];
+                alert(msg);
+            }, 180);
+            logoClicks = 0;
+        }
+    });
+}
 
-    logoClicks++;
+let glitchLocked = true;
 
-    if(logoClicks >= 5){
-
-        document.body.classList.add("glitch");
-
-        setTimeout(() => {
-            document.body.classList.remove("glitch");
-        }, 150);
-
-        alert("THE PARADOX IS WATCHING.");
-
-        logoClicks = 0;
-    }
-});
-
-/* ========================= */
-/* RANDOM GLITCH */
-/* ========================= */
+function triggerGlitch() {
+    if (glitchLocked) return;
+    document.body.classList.add("glitch");
+    setTimeout(() => document.body.classList.remove("glitch"), 200);
+}
 
 setInterval(() => {
+    if (Math.random() > 0.78) triggerGlitch();
+}, 6500);
 
-    if(Math.random() > 0.75){
+window.addEventListener("load", () => {
+    document.querySelectorAll(".feature").forEach((el, i) => {
+        el.style.transitionDelay = `${i * 0.06}s`;
+    });
+});
 
-        document.body.classList.add("glitch");
+const sfxHover = document.getElementById("sfxHover");
+function playHover() {
+    sfxHover.currentTime = 0;
+    sfxHover.volume = 0.2;
+    sfxHover.play();
+}
+document.querySelectorAll("a, .feature, .downloadImg, .logo, .part")
+    .forEach(el => el.addEventListener("mouseenter", playHover));
 
-        setTimeout(() => {
-            document.body.classList.remove("glitch");
-        }, 120);
-    }
+window.addEventListener("load", () => {
+    const sfxPanel = document.getElementById("sfxPanel");
+    sfxPanel.volume = 0.7;
+    sfxPanel.play();
+});
 
-}, 7000);
+setTimeout(() => {
+    const sfxPop = document.getElementById("sfxPop");
+    sfxPop.volume = 0.6;
+    sfxPop.play();
+}, 1200);
 
 </script>
-
 </body>
 </html>
